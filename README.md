@@ -20,5 +20,17 @@ The raycasting program is designed to render 2D maps using a raycasting techniqu
 
 1. Clone the repository:
    ```sh
-   git clone https://github.com/Daniel-0liver/raycast_cpp.git
+	git clone https://github.com/Daniel-0liver/raycast_cpp.git
    ```
+2. Navigate to the project directory:
+   ```sh
+	cd raycast_cpp
+   ```
+3. Install the required dependencies:
+	```sh
+	sudo apt-get install libsfml-dev
+	```
+4. Build the project using Make:
+	```sh
+	make
+	```
