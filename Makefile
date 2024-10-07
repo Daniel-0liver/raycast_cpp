@@ -1,20 +1,20 @@
 HEADER		=	./includes
 
 SRC			=	src/main.cpp \
-				src/Player.cpp \
 				src/Map.cpp \
-				src/Rays.cpp \
+				src/Player.cpp \
+				src/Utils.cpp \
 
 OBJ			=	$(patsubst src%, obj%, $(SRC:.cpp=.o))
 
 CC			=	c++
 
 CXXFLAGS	=	-I${HEADER} -Wall -Wextra -Werror -g
-LDFLAGS		=	-lGL -lGLU -lglut
+LDFLAGS		=	-lsfml-graphics -lsfml-window -lsfml-system
 
 NAME		=	raycast
 
-all:		obj $(NAME)
+all:		obj $(NAME) run
 
 $(NAME):	$(OBJ)
 			@$(CC) $(OBJ) -o $@ $(LDFLAGS)
@@ -26,6 +26,9 @@ obj/%.o:	src/%.cpp
 			@$(CC) $(CXXFLAGS) -o $@ -c $<
 			@echo "$@ $(GREEN)created$(RESET)"
 
+run:
+			./$(NAME)
+            
 clean:
 			@rm -rf $(OBJ) obj
 			@echo "Object files $(RED)removed.$(RESET)"

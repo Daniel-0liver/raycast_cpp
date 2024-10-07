@@ -1,41 +1,43 @@
 #include "Utils.hpp"
 
-Player 	player;
-Map		map;
-Rays	rays;
-
-void display()
+int main()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	map.drawMap2D();
-	player.drawPlayer();
-	rays.drawRays3D(map, player);
-	glutSwapBuffers();
-}
+	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Raycast");
 
-void buttons(unsigned char key, int x, int y)
-{
-	if (key == 'q') { glutLeaveMainLoop(); }
-	else
-		player.playerMovement(key, x, y);
-}
+	if (!window.isOpen())
+		return (1);
+	std::vector<std::vector<int>> grid = parseMap("assets/maps/map.txt");
+	if (grid.empty())
+	{
+		std::cerr << "Error while parsing map" << std::endl;
+		return (1);
+	}
 
-void init()
-{
-	glClearColor(0.3, 0.3, 0.3, 0);
-	gluOrtho2D(0, 1024, 510, 0);
-}
+	Map map(TILE_SIZE, grid);
 
-int main(int argc, char** argv) 
-{
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-	glutInitWindowSize(1024, 510);
-	glutCreateWindow("RayCast - Oliver");
-	init();
-	glutDisplayFunc(display);
-	glutKeyboardFunc(buttons);
-	glutMainLoop();	
+	Player player(sf::Vector2f(PLAYER_X, PLAYER_Y));
+
+	sf::Clock gameClock;
+
+	while (window.isOpen())
+	{
+		float deltaTime = gameClock.restart().asSeconds();
+
+		sf::Event event;
+
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+
+		player.update(deltaTime);
+
+		window.clear();
+		map.draw(window);
+		player.draw(window);
+		window.display();
+	}
 
 	return (0);
 }

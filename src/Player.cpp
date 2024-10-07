@@ -1,10 +1,7 @@
 #include "Player.hpp"
 
-Player::Player() : _playerPosX(300), _playerPosY(300), _velocity(5) 
+Player::Player(sf::Vector2f position) : position(position), angle(0.0f)
 {
-	_playerAngle = 0;
-	_playerDeltaX = cos(_playerAngle) * _velocity;
-	_playerDeltaY = sin(_playerAngle) * _velocity;
 }
 
 Player::Player(Player const &obj)
@@ -14,107 +11,54 @@ Player::Player(Player const &obj)
 
 Player &Player::operator=(Player const &obj)
 {
-	this->_playerPosX = obj._playerPosX;
-	this->_playerPosY = obj._playerPosY;
+	this->position = obj.position;
+	this->angle = obj.angle;
+	*this = obj;
 	return (*this);
 }
 
 Player::~Player() {}
 
-// Getters
-float Player::getPlayerPosX() const {
-    return _playerPosX;
-}
-
-float Player::getPlayerPosY() const {
-    return _playerPosY;
-}
-
-float Player::getPlayerDeltaX() const {
-    return _playerDeltaX;
-}
-
-float Player::getPlayerDeltaY() const {
-    return _playerDeltaY;
-}
-
-float Player::getPlayerAngle() const {
-    return _playerAngle;
-}
-
-float Player::getVelocity() const {
-    return _velocity;
-}
-
-// Setters
-void Player::setPlayerPosX(float posX) {
-    _playerPosX = posX;
-}
-
-void Player::setPlayerPosY(float posY) {
-    _playerPosY = posY;
-}
-
-void Player::setPlayerDeltaX(float deltaX) {
-    _playerDeltaX = deltaX;
-}
-
-void Player::setPlayerDeltaY(float deltaY) {
-    _playerDeltaY = deltaY;
-}
-
-void Player::setPlayerAngle(float angle) {
-    _playerAngle = angle;
-}
-
-void Player::setVelocity(float velocity) {
-    _velocity = velocity;
-}
-
-void Player::drawPlayer()
+void Player::draw(sf::RenderTarget &target)
 {
-	glColor3f(1, 1, 0);
-	glPointSize(8);
-	glBegin(GL_POINTS);
-	glVertex2i(_playerPosX, _playerPosY);
-	glEnd();
+	sf::RectangleShape player(sf::Vector2f(8.0f, 8.0f));
+	player.setOrigin(4.0f, 4.0f);
+	player.setPosition(position);
+	player.setFillColor(sf::Color::Green);
 
-	glLineWidth(3);
-	glBegin(GL_LINES);
-	glVertex2i(_playerPosX, _playerPosY);
-	glVertex2i(_playerPosX + _playerDeltaX * 5, _playerPosY + _playerDeltaY * 5);
-	glEnd();
+	sf::RectangleShape line(sf::Vector2f(24.0f, 2.0f));
+	line.setPosition(position);
+	line.setRotation(angle);
+	line.setFillColor(sf::Color::Red);
+
+	target.draw(line);
+	target.draw(player);
 }
 
-void Player::playerMovement(unsigned char key, int x, int y)
+void Player::update(float deltaTime)
 {
-	(void)x;
-	(void)y;
-	if (key == 'a')
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		_playerAngle -= 0.1;
-		if (_playerAngle < 0)
-			_playerAngle += PI4;
-		_playerDeltaX = cos(_playerAngle) * _velocity;
-		_playerDeltaY = sin(_playerAngle) * _velocity;
+		angle -= TURN_SPEED * deltaTime;
 	}
-	if (key == 'd')
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		_playerAngle += 0.1;
-		if (_playerAngle >  PI4)
-			_playerAngle -= PI4;
-		_playerDeltaX = cos(_playerAngle) * _velocity;
-		_playerDeltaY = sin(_playerAngle) * _velocity;
+		angle += TURN_SPEED * deltaTime;
 	}
-	if (key == 'w')
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		_playerPosX += _playerDeltaX;
-		_playerPosY += _playerDeltaY;
+		float radians = angle * PI / 180.0f;
+
+		position.x += cos(radians) * MOVE_SPEED * deltaTime;
+		position.y += sin(radians) * MOVE_SPEED * deltaTime;
 	}
-	if (key == 's')
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		_playerPosX -= _playerDeltaX;
-		_playerPosY -= _playerDeltaY;
+		float radians = angle * PI / 180.0f;
+
+		position.x -= cos(radians) * MOVE_SPEED * deltaTime;
+		position.y -= sin(radians) * MOVE_SPEED * deltaTime;
 	}
-	glutPostRedisplay();
 }

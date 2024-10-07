@@ -5,23 +5,12 @@
 class Map
 {
 private:
-	int					_mapWidth;
-	int					_mapHeight;
-	int					_mapSize;
+	float	_cellSize;
+	std::vector<std::vector<int>> _grid;
 public:
-	std::vector<int>	_map;
-	Map();
+	Map(float cellSize, int width, int height);
+	Map(float cellSize, std::vector<std::vector<int>> grid);
 	~Map();
 
-    // Getters
-    int getMapWidth() const;
-    int getMapHeight() const;
-    int getMapSize() const;
-
-    // Setters
-    void setMapWidth(int width);
-    void setMapHeight(int height);
-    void setMapSize(int size);
-
-	void	drawMap2D();
+	void draw(sf::RenderTarget &target);
 };

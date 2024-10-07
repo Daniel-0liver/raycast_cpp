@@ -1,17 +1,30 @@
 #pragma once
 
 #include <iostream>
-#include <GL/glut.h>
-#include "GL/freeglut.h"
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/VideoMode.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Keyboard.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/System/Vector2.hpp>
 #include <math.h>
 #include <vector>
-#include "Player.hpp"
 #include "Map.hpp"
-#include "Rays.hpp"
+#include "Player.hpp"
 
-#define	PI 3.1415926535
-#define	PI2 PI/2
-#define	PI3 3*PI/2
-#define	PI4 2*PI
-#define DR 0.0174533 //One degree in radian
-#define DR30 DR*30
+const float PI = 3.1415926535f;
+const float TURN_SPEED = 100.0f;
+const float MOVE_SPEED = 100.0f;
+const float FOV = 60.0f;
+const float WINDOW_WIDTH = 1024.0f;
+const float WINDOW_HEIGHT = 704.0f;
+const float PLAYER_X = 128.0f;
+const float PLAYER_Y = 128.0f;
+const float TILE_SIZE = 32.0f;
+
+std::vector<std::vector<int>> parseMap(std::string filename);
