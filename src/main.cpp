@@ -17,6 +17,8 @@ int main()
 
 	Player player(sf::Vector2f(PLAYER_X, PLAYER_Y));
 
+	Rays rays;
+
 	sf::Clock gameClock;
 
 	while (window.isOpen())
@@ -27,7 +29,7 @@ int main()
 
 		while (window.pollEvent(event))
 		{
-			if (event.type == sf::Event::Closed)
+			if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 				window.close();
 		}
 
@@ -35,6 +37,7 @@ int main()
 
 		window.clear();
 		map.draw(window);
+		rays.drawRays(window, player, map);
 		player.draw(window);
 		window.display();
 	}

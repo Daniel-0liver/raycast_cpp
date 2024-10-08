@@ -1,6 +1,6 @@
 # Raycast Program
 
-This project is a raycasting program in C++ created using SFML. Initially, the project started with OpenGL, but due to a bug on WSL2, it was switched to SFML.
+This project is a raycasting program in C++ created using SFML. Initially, the project started with OpenGL, but due to a grafic bug on WSL2, it was switched to SFML.
 
 ## Description
 
@@ -15,6 +15,7 @@ The raycasting program is designed to render 2D maps using a raycasting techniqu
 ## Requirements
 
 - SFML (Simple and Fast Multimedia Library)
+- MAKE (The command-line tool that reads the Makefile and executes the build instructions.)
 
 ## Installation
 

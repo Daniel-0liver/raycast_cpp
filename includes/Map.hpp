@@ -13,4 +13,6 @@ public:
 	~Map();
 
 	void draw(sf::RenderTarget &target);
+	const std::vector<std::vector<int>> &getGrid() const;
+	float getCellSize() const;
 };

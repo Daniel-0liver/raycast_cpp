@@ -3,6 +3,7 @@ HEADER		=	./includes
 SRC			=	src/main.cpp \
 				src/Map.cpp \
 				src/Player.cpp \
+				src/Rays.cpp \
 				src/Utils.cpp \
 
 OBJ			=	$(patsubst src%, obj%, $(SRC:.cpp=.o))

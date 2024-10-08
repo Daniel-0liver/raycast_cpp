@@ -21,8 +21,8 @@ Player::~Player() {}
 
 void Player::draw(sf::RenderTarget &target)
 {
-	sf::RectangleShape player(sf::Vector2f(8.0f, 8.0f));
-	player.setOrigin(4.0f, 4.0f);
+	sf::CircleShape player(8.0f);
+	player.setOrigin(player.getRadius(), player.getRadius());
 	player.setPosition(position);
 	player.setFillColor(sf::Color::Green);
 

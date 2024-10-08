@@ -40,3 +40,13 @@ void Map::draw(sf::RenderTarget &target)
 		}
 	}
 }
+
+const std::vector<std::vector<int>> &Map::getGrid() const
+{
+	return (_grid);
+}
+
+float Map::getCellSize() const
+{
+	return (_cellSize);
+}
