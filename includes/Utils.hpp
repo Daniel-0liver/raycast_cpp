@@ -13,6 +13,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <math.h>
+#include <limits>
 #include <vector>
 #include "Map.hpp"
 #include "Player.hpp"
