@@ -5,6 +5,13 @@
 class Player;
 class Map;
 
+struct Ray
+{
+	sf::Vector2f hitPosition;
+	float distance;
+	bool isHit;
+};
+
 class Rays
 {
 private:
@@ -14,4 +21,5 @@ public:
 	~Rays();
 
 	void drawRays(sf::RenderTarget &target, const Player &player, const Map &map);
+	static Ray castRay(sf::Vector2f start, const Map &map, float angleInDegrees);
 };

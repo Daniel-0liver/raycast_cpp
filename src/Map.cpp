@@ -28,7 +28,7 @@ void Map::draw(sf::RenderTarget &target)
 			}
 			else if (_grid[y][x] == 1)
 			{
-				cell.setFillColor(sf::Color::White);
+				cell.setFillColor(sf::Color::Green);
 			}
 			else
 			{
