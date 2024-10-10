@@ -20,6 +20,7 @@ public:
 	Rays();
 	~Rays();
 
-	void drawRays(sf::RenderTarget &target, const Player &player, const Map &map);
+	void drawRays2D(sf::RenderTarget &target, const Player &player, const Map &map);
+	void drawRays3D(sf::RenderTarget &target, const Player &player, const Map &map);
 	static Ray castRay(sf::Vector2f start, const Map &map, float angleInDegrees);
 };

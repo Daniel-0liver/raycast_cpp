@@ -2,7 +2,8 @@
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Raycast");
+	sf::RenderWindow window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Raycast",
+							sf::Style::Close | sf::Style::Titlebar);
 
 	if (!window.isOpen())
 		return (1);
@@ -36,9 +37,7 @@ int main()
 		player.update(deltaTime);
 
 		window.clear();
-		map.draw(window);
-		rays.drawRays(window, player, map);
-		player.draw(window);
+		rays.drawRays3D(window, player, map);
 		window.display();
 	}
 
