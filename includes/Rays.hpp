@@ -10,6 +10,7 @@ struct Ray
 	sf::Vector2f hitPosition;
 	float distance;
 	bool isHit;
+	bool isHitVertical;
 };
 
 class Rays

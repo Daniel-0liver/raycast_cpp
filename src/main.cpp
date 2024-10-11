@@ -21,11 +21,17 @@ int main()
 	Rays rays;
 
 	sf::Clock gameClock;
+	sf::Text fps;
+	sf::Font font;
+	font.loadFromFile("assets/fonts/OpenSans-Bold.ttf");
+	fps.setFont(font);
+	fps.setCharacterSize(24);
+	fps.setFillColor(sf::Color::Red);
+	fps.setPosition(WINDOW_WIDTH - 164, 0);
 
 	while (window.isOpen())
 	{
 		float deltaTime = gameClock.restart().asSeconds();
-
 		sf::Event event;
 
 		while (window.pollEvent(event))
@@ -35,9 +41,13 @@ int main()
 		}
 
 		player.update(deltaTime);
+		fps.setString("FPS: " + std::to_string(1.0f / deltaTime));
 
 		window.clear();
 		rays.drawRays3D(window, player, map);
+		map.drawMinimap(window, TILE_SIZE * MINIMAP_SCALE);
+		rays.drawRays2D(window, player, map);
+		window.draw(fps);
 		window.display();
 	}
 

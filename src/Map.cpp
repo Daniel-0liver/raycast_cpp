@@ -4,19 +4,31 @@ Map::Map(float cellSize, int width, int height) : _cellSize(cellSize), _grid(hei
 
 Map::Map(float cellSize, std::vector<std::vector<int>> grid) : _cellSize(cellSize), _grid(grid) {}
 
+Map::Map(Map const &obj)
+{
+	*this = obj;
+}
+
+Map &Map::operator=(Map const &obj)
+{
+	this->_cellSize = obj._cellSize;
+	this->_grid = obj._grid;
+	return (*this);
+}
+
 Map::~Map() {}
 
-void Map::draw(sf::RenderTarget &target)
+void Map::drawMinimap(sf::RenderTarget &target, float cellSize)
 {
 	if (_grid.empty())
 		return;
-	sf::RectangleShape backGround(sf::Vector2f((float)_grid[0].size() * _cellSize, (float)_grid.size() * _cellSize));
+	sf::RectangleShape backGround(sf::Vector2f((float)_grid[0].size() * cellSize, (float)_grid.size() * cellSize));
 
 	backGround.setFillColor(sf::Color::Black);
 
 	target.draw(backGround);
 
-	sf::RectangleShape cell(sf::Vector2f(_cellSize * 0.95f, _cellSize * 0.95f));
+	sf::RectangleShape cell(sf::Vector2f(cellSize, cellSize));
 
 	for (size_t y = 0; y < _grid.size(); y++)
 	{
@@ -35,7 +47,7 @@ void Map::draw(sf::RenderTarget &target)
 				cell.setFillColor(sf::Color::Black);
 			}
 
-			cell.setPosition((float)x * _cellSize + _cellSize * 0.025f, (float)y * _cellSize + _cellSize * 0.025f);
+			cell.setPosition((float)x * cellSize + cellSize * 0.025f, (float)y * cellSize + cellSize * 0.025f);
 			target.draw(cell);
 		}
 	}
@@ -49,4 +61,9 @@ const std::vector<std::vector<int>> &Map::getGrid() const
 float Map::getCellSize() const
 {
 	return (_cellSize);
+}
+
+void Map::setCellSize(float cellSize)
+{
+	_cellSize = cellSize;
 }

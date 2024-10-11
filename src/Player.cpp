@@ -21,17 +21,11 @@ Player::~Player() {}
 
 void Player::draw(sf::RenderTarget &target)
 {
-	sf::CircleShape player(8.0f);
+	sf::CircleShape player(2.0f);
 	player.setOrigin(player.getRadius(), player.getRadius());
-	player.setPosition(position);
-	player.setFillColor(sf::Color::Green);
+	player.setPosition(position.x * MINIMAP_SCALE, position.y * MINIMAP_SCALE);
+	player.setFillColor(sf::Color::Red);
 
-	sf::RectangleShape line(sf::Vector2f(24.0f, 2.0f));
-	line.setPosition(position);
-	line.setRotation(angle);
-	line.setFillColor(sf::Color::Red);
-
-	target.draw(line);
 	target.draw(player);
 }
 

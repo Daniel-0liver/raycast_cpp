@@ -34,7 +34,7 @@ Ray Rays::castRay(sf::Vector2f start, const Map &map, float angleInDegrees)
 	}
 	else
 	{
-		vdof = MAX_RAYS;
+		vdof = MAX_RAYCAST_DEPTH;
 	}
 
 	const auto &grid = map.getGrid();
@@ -72,7 +72,7 @@ Ray Rays::castRay(sf::Vector2f start, const Map &map, float angleInDegrees)
 	}
 	else
 	{
-		hdof = MAX_RAYS;
+		hdof = MAX_RAYCAST_DEPTH;
 	}
 
 	for (; hdof < MAX_RAYCAST_DEPTH; hdof++)
@@ -92,22 +92,28 @@ Ray Rays::castRay(sf::Vector2f start, const Map &map, float angleInDegrees)
 		hRayPos += offset;
 	}
 
-	return (vDist < hDist) ? Ray{vRayPos, vDist, isHit} : Ray{hRayPos, hDist, isHit};
+	return (vDist < hDist) ? Ray{vRayPos, vDist, isHit, vDist < hDist} 
+			: Ray{hRayPos, hDist, isHit, vDist < hDist};
 }
 
 void Rays::drawRays2D(sf::RenderTarget &target, const Player &player, const Map &map)
 {
-	for (float angle = player.angle - PLAYER_FOV / 2.0f;
-		 angle < player.angle + PLAYER_FOV / 2.0f;
+	for (float angle = player.angle - 30.0f / 2.0f;
+		 angle < player.angle + 30.0f / 2.0f;
 		 angle += 0.1f)
 	{
-		Ray ray = castRay(player.position, map, angle);
+		sf::Vector2f tempPlayerPositon = player.position;
+		tempPlayerPositon.x = player.position.x * MINIMAP_SCALE;
+		tempPlayerPositon.y = player.position.y * MINIMAP_SCALE;
+
+		Map tempMap = map;
+		tempMap.setCellSize(map.getCellSize() * MINIMAP_SCALE);
+		Ray ray = castRay(tempPlayerPositon, tempMap, angle);
 		if (ray.isHit)
 		{
 			sf::Vertex line[] = {
-				sf::Vertex(player.position),
+				sf::Vertex(tempPlayerPositon),
 				sf::Vertex(ray.hitPosition)};
-			// line->color = sf::Color::Red;
 			target.draw(line, 2, sf::Lines);
 		}
 	}
@@ -115,20 +121,38 @@ void Rays::drawRays2D(sf::RenderTarget &target, const Player &player, const Map 
 
 void Rays::drawRays3D(sf::RenderTarget &target, const Player &player, const Map &map)
 {
+	sf::RectangleShape background(sf::Vector2f(WINDOW_WIDTH, WINDOW_HEIGHT / 2.0f));
+	background.setFillColor(sf::Color(100, 170, 250, 128));
+	target.draw(background);
+
+	background.setPosition(0.0f, WINDOW_HEIGHT / 2.0f);
+	background.setFillColor(sf::Color(70, 70, 70, 128));
+	target.draw(background);
+
 	float angle = player.angle - PLAYER_FOV / 2.0f;
 	float angleStep = PLAYER_FOV / WINDOW_WIDTH;
+	const float maxRaycastDepth = MAX_RAYCAST_DEPTH * map.getCellSize();
 	for(size_t i = 0; i < MAX_RAYS; i++, angle += angleStep)
 	{
 		Ray ray = castRay(player.position, map, angle);
 		if (ray.isHit)
 		{
+			ray.distance *= cos((angle - player.angle) * PI / 180.0f);
+
 			float wallHeight = (map.getCellSize() * WINDOW_HEIGHT) / ray.distance;
 			if(wallHeight > WINDOW_HEIGHT)
 				wallHeight = WINDOW_HEIGHT;
+
+			float brightness = 1.0f - (ray.distance / maxRaycastDepth);
+			if(brightness < 0.0f)
+				brightness = 0.0f;
 			
+			float shade = (ray.isHitVertical ? 0.8f : 1.0f) * brightness;
+
 			float wallOffset = (WINDOW_HEIGHT - wallHeight) / 2.0f;
 			sf::RectangleShape column(sf::Vector2f(COLUMN_WIDTH, wallHeight));
 			column.setPosition(i * COLUMN_WIDTH, wallOffset);
+			column.setFillColor(sf::Color(255 * shade, 255 * shade, 255 * shade));
 			target.draw(column);
 		}
 	}

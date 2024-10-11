@@ -10,9 +10,12 @@ private:
 public:
 	Map(float cellSize, int width, int height);
 	Map(float cellSize, std::vector<std::vector<int>> grid);
+	Map(Map const &obj);
+	Map &operator=(Map const &obj);
 	~Map();
 
-	void draw(sf::RenderTarget &target);
+	void drawMinimap(sf::RenderTarget &target, float cellSize);
 	const std::vector<std::vector<int>> &getGrid() const;
 	float getCellSize() const;
+	void setCellSize(float cellSize);
 };
