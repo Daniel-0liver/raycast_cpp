@@ -7,6 +7,7 @@ class Map;
 
 struct Ray
 {
+	sf::Vector2u mapPosition;
 	sf::Vector2f hitPosition;
 	float distance;
 	bool isHit;

@@ -42,6 +42,10 @@ void Map::drawMinimap(sf::RenderTarget &target, float cellSize)
 			{
 				cell.setFillColor(sf::Color::Green);
 			}
+			else if (_grid[y][x] == 32)
+			{
+				cell.setFillColor(sf::Color::Red);
+			}
 			else
 			{
 				cell.setFillColor(sf::Color::Black);

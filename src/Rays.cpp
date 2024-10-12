@@ -12,7 +12,8 @@ Ray Rays::castRay(sf::Vector2f start, const Map &map, float angleInDegrees)
 	float cellSize = map.getCellSize();
 
 	bool isHit = false;
-	sf::Vector2f vRayPos, hRayPos, offset;
+	sf::Vector2f vRayPos, hRayPos, offset; 
+	sf::Vector2u vMapPosition, hMapPosition;
 	size_t vdof = 0, hdof = 0;
 	float vDist = std::numeric_limits<float>::max();
 	float hDist = std::numeric_limits<float>::max();
@@ -48,6 +49,7 @@ Ray Rays::castRay(sf::Vector2f start, const Map &map, float angleInDegrees)
 			grid[mapY][mapX])
 		{
 			isHit = true;
+			vMapPosition = sf::Vector2u(mapX, mapY);
 			vDist = sqrt(pow(start.x - vRayPos.x, 2) + pow(start.y - vRayPos.y, 2));
 			break;
 		}
@@ -85,6 +87,7 @@ Ray Rays::castRay(sf::Vector2f start, const Map &map, float angleInDegrees)
 			grid[mapY][mapX])
 		{
 			isHit = true;
+			hMapPosition = sf::Vector2u(mapX, mapY);
 			hDist = sqrt(pow(start.x - hRayPos.x, 2) + pow(start.y - hRayPos.y, 2));
 			break;
 		}
@@ -92,8 +95,8 @@ Ray Rays::castRay(sf::Vector2f start, const Map &map, float angleInDegrees)
 		hRayPos += offset;
 	}
 
-	return (vDist < hDist) ? Ray{vRayPos, vDist, isHit, vDist < hDist} 
-			: Ray{hRayPos, hDist, isHit, vDist < hDist};
+	return (vDist < hDist) ? Ray{vMapPosition, vRayPos, vDist, isHit, vDist < hDist} 
+			: Ray{hMapPosition, hRayPos, hDist, isHit, vDist < hDist};
 }
 
 void Rays::drawRays2D(sf::RenderTarget &target, const Player &player, const Map &map)
@@ -130,7 +133,7 @@ void Rays::drawRays3D(sf::RenderTarget &target, const Player &player, const Map 
 	target.draw(background);
 
 	float angle = player.angle - PLAYER_FOV / 2.0f;
-	float angleStep = PLAYER_FOV / WINDOW_WIDTH;
+	float angleStep = PLAYER_FOV / MAX_RAYS;
 	const float maxRaycastDepth = MAX_RAYCAST_DEPTH * map.getCellSize();
 	for(size_t i = 0; i < MAX_RAYS; i++, angle += angleStep)
 	{
@@ -152,7 +155,12 @@ void Rays::drawRays3D(sf::RenderTarget &target, const Player &player, const Map 
 			float wallOffset = (WINDOW_HEIGHT - wallHeight) / 2.0f;
 			sf::RectangleShape column(sf::Vector2f(COLUMN_WIDTH, wallHeight));
 			column.setPosition(i * COLUMN_WIDTH, wallOffset);
-			column.setFillColor(sf::Color(255 * shade, 255 * shade, 255 * shade));
+			if(map.getGrid()[ray.mapPosition.y][ray.mapPosition.x] == 32)
+				column.setFillColor(sf::Color(255 * shade, 100 * shade, 0 * shade));
+			else if(map.getGrid()[ray.mapPosition.y][ray.mapPosition.x] == 1)
+				column.setFillColor(sf::Color(255 * shade, 255 * shade, 255 * shade));
+			else if(map.getGrid()[ray.mapPosition.y][ray.mapPosition.x] == 2)
+				column.setFillColor(sf::Color(100, 100, 100));
 			target.draw(column);
 		}
 	}
