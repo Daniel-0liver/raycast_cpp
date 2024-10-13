@@ -12,7 +12,7 @@ Ray Rays::castRay(sf::Vector2f start, const Map &map, float angleInDegrees)
 	float cellSize = map.getCellSize();
 
 	bool isHit = false;
-	sf::Vector2f vRayPos, hRayPos, offset; 
+	sf::Vector2f vRayPos, hRayPos, offset;
 	sf::Vector2u vMapPosition, hMapPosition;
 	size_t vdof = 0, hdof = 0;
 	float vDist = std::numeric_limits<float>::max();
@@ -95,8 +95,8 @@ Ray Rays::castRay(sf::Vector2f start, const Map &map, float angleInDegrees)
 		hRayPos += offset;
 	}
 
-	return (vDist < hDist) ? Ray{vMapPosition, vRayPos, vDist, isHit, vDist < hDist} 
-			: Ray{hMapPosition, hRayPos, hDist, isHit, vDist < hDist};
+	return (vDist < hDist) ? Ray{vMapPosition, vRayPos, vDist, isHit, vDist < hDist}
+						   : Ray{hMapPosition, hRayPos, hDist, isHit, vDist < hDist};
 }
 
 void Rays::drawRays2D(sf::RenderTarget &target, const Player &player, const Map &map)
@@ -135,32 +135,43 @@ void Rays::drawRays3D(sf::RenderTarget &target, const Player &player, const Map 
 	float angle = player.angle - PLAYER_FOV / 2.0f;
 	float angleStep = PLAYER_FOV / MAX_RAYS;
 	const float maxRaycastDepth = MAX_RAYCAST_DEPTH * map.getCellSize();
-	for(size_t i = 0; i < MAX_RAYS; i++, angle += angleStep)
+
+	for (size_t i = 0; i < MAX_RAYS; i++, angle += angleStep)
 	{
 		Ray ray = castRay(player.position, map, angle);
+		if (angle < 0.0f)
+			angle += 360.0f;
+		else if (angle > 360.0f)
+			angle -= 360.0f;
 		if (ray.isHit)
 		{
 			ray.distance *= cos((angle - player.angle) * PI / 180.0f);
 
 			float wallHeight = (map.getCellSize() * WINDOW_HEIGHT) / ray.distance;
-			if(wallHeight > WINDOW_HEIGHT)
+			if (wallHeight > WINDOW_HEIGHT)
 				wallHeight = WINDOW_HEIGHT;
 
 			float brightness = 1.0f - (ray.distance / maxRaycastDepth);
-			if(brightness < 0.0f)
+			if (brightness < 0.0f)
 				brightness = 0.0f;
-			
+
 			float shade = (ray.isHitVertical ? 0.8f : 1.0f) * brightness;
 
 			float wallOffset = (WINDOW_HEIGHT - wallHeight) / 2.0f;
 			sf::RectangleShape column(sf::Vector2f(COLUMN_WIDTH, wallHeight));
 			column.setPosition(i * COLUMN_WIDTH, wallOffset);
-			if(map.getGrid()[ray.mapPosition.y][ray.mapPosition.x] == 32)
+			// North wall
+			if (!ray.isHitVertical && angle >= 0.0f && angle <= 180.0f)
 				column.setFillColor(sf::Color(255 * shade, 100 * shade, 0 * shade));
-			else if(map.getGrid()[ray.mapPosition.y][ray.mapPosition.x] == 1)
-				column.setFillColor(sf::Color(255 * shade, 255 * shade, 255 * shade));
-			else if(map.getGrid()[ray.mapPosition.y][ray.mapPosition.x] == 2)
-				column.setFillColor(sf::Color(100, 100, 100));
+			// South wall
+			else if (!ray.isHitVertical && angle > 180.0f && angle <= 360.0f)
+				column.setFillColor(sf::Color(100 * shade, 255 * shade, 0 * shade));
+			// West wall
+			else if (ray.isHitVertical && angle >= 90.0f && angle < 270.0f)
+				column.setFillColor(sf::Color(255 * shade, 100 * shade, 100 * shade));
+			// East wall
+			else if (ray.isHitVertical)
+				column.setFillColor(sf::Color(100 * shade, 255 * shade, 100 * shade));
 			target.draw(column);
 		}
 	}

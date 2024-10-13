@@ -17,7 +17,6 @@ struct Ray
 class Rays
 {
 private:
-
 public:
 	Rays();
 	~Rays();

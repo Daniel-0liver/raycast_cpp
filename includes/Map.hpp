@@ -5,8 +5,9 @@
 class Map
 {
 private:
-	float	_cellSize;
+	float _cellSize;
 	std::vector<std::vector<int>> _grid;
+
 public:
 	Map(float cellSize, int width, int height);
 	Map(float cellSize, std::vector<std::vector<int>> grid);

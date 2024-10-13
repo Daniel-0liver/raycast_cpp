@@ -43,6 +43,8 @@ int main()
 		player.update(deltaTime);
 		fps.setString("FPS: " + std::to_string(1.0f / deltaTime));
 
+		// std::cout << "Player position: " << player.position.x << ", " << player.position.y << std::endl;
+
 		window.clear();
 		rays.drawRays3D(window, player, map);
 		map.drawMinimap(window, TILE_SIZE * MINIMAP_SCALE);

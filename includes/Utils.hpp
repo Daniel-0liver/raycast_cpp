@@ -27,10 +27,10 @@ const float PLAYER_FOV = 60.0f;
 const float WINDOW_WIDTH = 1200.0f;
 const float WINDOW_HEIGHT = 675.0f;
 const float MINIMAP_SCALE = 0.10f;
-const float PLAYER_X = 310.0f;
-const float PLAYER_Y = 420.0f;
+const float PLAYER_X = 695.0f;
+const float PLAYER_Y = 204.0f;
 const float TILE_SIZE = 48.0f;
-const float	MAX_RAYS = 512.0f;
+const float MAX_RAYS = 512.0f;
 const float MAX_RAYCAST_DEPTH = 16.0f;
 const float COLUMN_WIDTH = WINDOW_WIDTH / MAX_RAYS;
 
