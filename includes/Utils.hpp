@@ -11,6 +11,8 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <math.h>
@@ -19,6 +21,7 @@
 #include "Map.hpp"
 #include "Player.hpp"
 #include "Rays.hpp"
+#include "Sprite.hpp"
 
 const float PI = 3.1415926535f;
 const float TURN_SPEED = 60.0f;

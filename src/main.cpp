@@ -45,11 +45,23 @@ int main()
 
 		// std::cout << "Player position: " << player.position.x << ", " << player.position.y << std::endl;
 
+		sf::Texture gunTexture;
+		if (!gunTexture.loadFromFile("assets/sprites/gun.png"))
+		{
+			std::cerr << "Failed to load gun image" << std::endl;
+			return (1);
+		}
+		
+		sf::Sprite gunSprite;
+		gunSprite.setTexture(gunTexture);
+		gunSprite.setPosition(WINDOW_WIDTH / 2.0f - gunTexture.getSize().x / 2.0f, WINDOW_HEIGHT - gunTexture.getSize().y);
+
 		window.clear();
 		rays.drawRays3D(window, player, map);
 		map.drawMinimap(window, TILE_SIZE * MINIMAP_SCALE);
 		rays.drawRays2D(window, player, map);
 		window.draw(fps);
+		window.draw(gunSprite);
 		window.display();
 	}
 

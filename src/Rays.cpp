@@ -1,6 +1,10 @@
 #include "Rays.hpp"
 
-Rays::Rays() {}
+Rays::Rays()
+{
+	_sprites.emplace_back("assets/sprites/one_piece.png");
+	// _sprites.emplace_back("assets/sprites/wall_texture.png");
+}
 
 Rays::~Rays() {}
 
@@ -134,7 +138,7 @@ void Rays::drawRays3D(sf::RenderTarget &target, const Player &player, const Map 
 
 	float angle = player.angle - PLAYER_FOV / 2.0f;
 	float angleStep = PLAYER_FOV / MAX_RAYS;
-	const float maxRaycastDepth = MAX_RAYCAST_DEPTH * map.getCellSize();
+	// const float maxRaycastDepth = MAX_RAYCAST_DEPTH * map.getCellSize();
 
 	for (size_t i = 0; i < MAX_RAYS; i++, angle += angleStep)
 	{
@@ -145,34 +149,54 @@ void Rays::drawRays3D(sf::RenderTarget &target, const Player &player, const Map 
 			angle -= 360.0f;
 		if (ray.isHit)
 		{
-			ray.distance *= cos((angle - player.angle) * PI / 180.0f);
+			ray.distance *= cos((player.angle - angle) * PI / 180.0f);
 
 			float wallHeight = (map.getCellSize() * WINDOW_HEIGHT) / ray.distance;
+			float wallOffset = WINDOW_HEIGHT / 2.0f - wallHeight / 2.0f;
+			float texture;
+			if (ray.isHitVertical)
+			{
+				texture = static_cast<int>(ray.hitPosition.y) 
+					% _sprites[0].getTexture().getSize().x 
+						* _sprites[0].getTexture().getSize().y / map.getCellSize();
+			}
+			else
+			{
+				texture = static_cast<int>(ray.hitPosition.x) 
+					% _sprites[0].getTexture().getSize().x 
+						* _sprites[0].getTexture().getSize().x / map.getCellSize();
+			}
+
+			_sprites[0].getSprite().setPosition(i * COLUMN_WIDTH, wallOffset);
+
+			_sprites[0].getSprite().setTextureRect(
+				sf::IntRect(texture, 0, -1, _sprites[0].getTexture().getSize().y));
+
+			_sprites[0].getSprite().setScale(COLUMN_WIDTH, wallHeight / _sprites[0].getTexture().getSize().y);
+
 			if (wallHeight > WINDOW_HEIGHT)
 				wallHeight = WINDOW_HEIGHT;
 
-			float brightness = 1.0f - (ray.distance / maxRaycastDepth);
-			if (brightness < 0.0f)
-				brightness = 0.0f;
+			// float brightness = 1.0f - (ray.distance / maxRaycastDepth);
+			// if (brightness < 0.0f)
+			// 	brightness = 0.0f;
 
-			float shade = (ray.isHitVertical ? 0.8f : 1.0f) * brightness;
+			// float shade = (ray.isHitVertical ? 0.8f : 1.0f) * brightness;
+			// sf::RectangleShape column(sf::Vector2f(COLUMN_WIDTH, wallHeight));
 
-			float wallOffset = (WINDOW_HEIGHT - wallHeight) / 2.0f;
-			sf::RectangleShape column(sf::Vector2f(COLUMN_WIDTH, wallHeight));
-			column.setPosition(i * COLUMN_WIDTH, wallOffset);
-			// North wall
-			if (!ray.isHitVertical && angle >= 0.0f && angle <= 180.0f)
-				column.setFillColor(sf::Color(255 * shade, 100 * shade, 0 * shade));
-			// South wall
-			else if (!ray.isHitVertical && angle > 180.0f && angle <= 360.0f)
-				column.setFillColor(sf::Color(100 * shade, 255 * shade, 0 * shade));
-			// West wall
-			else if (ray.isHitVertical && angle >= 90.0f && angle < 270.0f)
-				column.setFillColor(sf::Color(255 * shade, 100 * shade, 100 * shade));
-			// East wall
-			else if (ray.isHitVertical)
-				column.setFillColor(sf::Color(100 * shade, 255 * shade, 100 * shade));
-			target.draw(column);
+			// // North wall
+			// if (!ray.isHitVertical && angle >= 0.0f && angle <= 180.0f)
+			// 	column.setFillColor(sf::Color(255 * shade, 100 * shade, 0 * shade));
+			// // South wall
+			// else if (!ray.isHitVertical && angle > 180.0f && angle <= 360.0f)
+			// 	column.setFillColor(sf::Color(100 * shade, 255 * shade, 0 * shade));
+			// // West wall
+			// else if (ray.isHitVertical && angle >= 90.0f && angle < 270.0f)
+			// 	column.setFillColor(sf::Color(255 * shade, 100 * shade, 100 * shade));
+			// // East wall
+			// else if (ray.isHitVertical)
+			// 	column.setFillColor(sf::Color(100 * shade, 255 * shade, 100 * shade));
+			_sprites[0].draw(target);
 		}
 	}
 }

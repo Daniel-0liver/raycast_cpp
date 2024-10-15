@@ -4,6 +4,7 @@
 
 class Player;
 class Map;
+class Sprite;
 
 struct Ray
 {
@@ -17,6 +18,7 @@ struct Ray
 class Rays
 {
 private:
+	std::vector<Sprite> _sprites;
 public:
 	Rays();
 	~Rays();

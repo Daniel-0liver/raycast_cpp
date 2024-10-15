@@ -5,6 +5,7 @@ SRC			=	src/main.cpp \
 				src/Player.cpp \
 				src/Rays.cpp \
 				src/Utils.cpp \
+				src/Sprite.cpp
 
 OBJ			=	$(patsubst src%, obj%, $(SRC:.cpp=.o))
 
