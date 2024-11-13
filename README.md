@@ -35,3 +35,4 @@ The raycasting program is designed to render 2D maps using a raycasting techniqu
 	```sh
 	make
 	```
+ 
